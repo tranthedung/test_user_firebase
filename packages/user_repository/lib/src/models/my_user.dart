@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:user_repository/src/entities/entities.dart';
 
 class MyUser extends Equatable {
   final String id;
@@ -40,6 +41,24 @@ class MyUser extends Equatable {
 
   //Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != MyUser.empty;
+
+  MyUserEntity toEnity() {
+    return MyUserEntity(
+      id: id,
+      email: email,
+      name: name,
+      picture: picture,
+    );
+  }
+
+  static MyUser fromEntity(MyUserEntity entity) {
+    return MyUser(
+      id: entity.id,
+      email: entity.email,
+      name: entity.name,
+      picture: entity.picture,
+    );
+  }
 
   @override
   // TODO: implement props
