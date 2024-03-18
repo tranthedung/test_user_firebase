@@ -1,15 +1,29 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:user_repository/src/entities/entities.dart';
 import 'package:user_repository/src/models/my_user.dart';
 import 'package:user_repository/src/user_repo.dart';
 
 class FirebaseUserRepository implements UserRepository {
   final FirebaseAuth _firebaseAuth;
+  final userCollection = FirebaseFirestore.instance.collection('users');
 
   FirebaseUserRepository({
     FirebaseAuth? firebaseAuth,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+
+  @override
+  Stream<User?> get user {
+    return _firebaseAuth.authStateChanges().map(
+      (firebaseUser) {
+        final user = firebaseUser;
+        return user;
+      },
+    );
+  }
+
   @override
   Future<MyUser> signUp(MyUser myUser, String password) async {
     try {
@@ -55,6 +69,30 @@ class FirebaseUserRepository implements UserRepository {
   Future<void> resetPassword(String email) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<MyUser> getMyUser(String myUserId) {
+    try {
+      return userCollection.doc(myUserId).get().then(
+            (value) => MyUser.fromEntity(
+              MyUserEntity.fromDocument(value.data()!),
+            ),
+          );
+    } catch (e) {
+      print(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> setUserData(MyUser user) async {
+    try {
+      await userCollection.doc(user.id).set(user.toEnity().toDocument());
     } catch (e) {
       print(e.toString());
       rethrow;
