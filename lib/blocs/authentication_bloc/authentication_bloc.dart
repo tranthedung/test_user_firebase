@@ -22,8 +22,16 @@ class AuthenticationBloc
       },
     );
 
-    on<AuthenticationEvent>((event, emit) {
-      // TODO: implement event handler
+    on<AuthenticationUserChanged>((event, emit) {
+      if (event.user != null) {
+        emit(AuthenticationState.authenticated(event.user!));
+      }
     });
+  }
+
+  @override
+  Future<void> close() {
+    _userSubscription.cancel();
+    return super.close();
   }
 }

@@ -1,6 +1,5 @@
 part of 'authentication_bloc.dart';
 
-
 abstract class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
   List<Object> get props => [];
@@ -12,4 +11,3 @@ class AuthenticationUserChanged extends AuthenticationEvent {
   final User? user;
 }
 
-class AuthenticationLogoutRequested extends AuthenticationEvent {}
