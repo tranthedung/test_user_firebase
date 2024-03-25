@@ -1,6 +1,30 @@
 part of 'my_user_bloc.dart';
 
-@immutable
-sealed class MyuserState {}
+enum MyUserStatus {
+  success,
+  loading,
+  failure,
+}
 
-final class MyuserInitial extends MyuserState {}
+class MyUserState extends Equatable {
+  final MyUserStatus status;
+  final MyUser? user;
+
+  const MyUserState._({
+    this.status = MyUserStatus.loading,
+    this.user,
+  });
+
+  const MyUserState.loading() : this._();
+
+  const MyUserState.success(MyUser user)
+      : this._(
+          status: MyUserStatus.success,
+          user: user,
+        );
+
+  const MyUserState.failure() : this._(status: MyUserStatus.failure);
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+}
